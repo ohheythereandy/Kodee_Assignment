@@ -167,6 +167,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Weather\Forecast.cshtml" />
     <Content Include="Views\Weather\ForecastDetails.cshtml" />
+    <Content Include="Views\Shared\_ForecastSearch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

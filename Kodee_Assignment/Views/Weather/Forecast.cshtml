@@ -4,15 +4,4 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Weather Forecast</h2>
-<span>Please enter city, state, and/or zip code to retrieve forecast details.</span>
-@using(Html.BeginForm("Forecast", "Weather")) {
-
-    <label>Address</label>
-    @Html.TextBoxFor(m => m.Address, new { @class="form-control"})
-    @Html.ValidationMessageFor(m => m.Address, null)
-
-    <br />
-    <input class="btn btn-primary" type="submit"/>
-}
-
+@Html.Partial("_ForecastSearch")

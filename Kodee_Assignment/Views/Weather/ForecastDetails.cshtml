@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@Html.Partial("_ForecastSearch")
+
 <h2>Forecast Details</h2>
 <label>Current temperature: </label>
 @Html.DisplayTextFor(m => m.temp)
