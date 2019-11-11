@@ -22,10 +22,30 @@ namespace Kodee_Assignment.Controllers
         private string appKeyQueryString = "APPID=a82297e58abde9d899a4dffa85b72020";
 
         // GET: Weather
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder)
         {
             var forecasts = from w in db.WeatherResult
                             select w;
+
+            ViewBag.ZipSortParm = String.IsNullOrEmpty(sortOrder) ? "zip_desc" : "";
+            ViewBag.TimeSortParm = sortOrder == "Time" ? "time_desc" : "Time";
+
+            switch(sortOrder)
+            {
+                case "zip_desc":
+                    forecasts = forecasts.OrderByDescending(m => m.Zipcode);
+                    break;
+                case "Time":
+                    forecasts = forecasts.OrderBy(m => m.Time);
+                    break;
+                case "time_desc":
+                    forecasts = forecasts.OrderByDescending(m => m.Time);
+                    break;
+                default:
+                    forecasts = forecasts.OrderBy(m => m.Zipcode);
+                    break;
+
+            }
             return View(forecasts.ToList());
         }
 

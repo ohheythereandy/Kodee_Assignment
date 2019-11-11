@@ -13,9 +13,8 @@
 
 <table class="table">
     <tr>
-        <th> @Html.DisplayNameFor(m => m.ID)</th>
-        <th>@Html.DisplayNameFor(m => m.Zipcode)</th>
-        <th>@Html.DisplayNameFor(m => m.Time)</th>
+        <th>@Html.ActionLink("Zipcode", "Index", new { sortOrder = ViewBag.ZipSortParm})</th>
+        <th>@Html.ActionLink("Time", "Index", new { sortOrder = ViewBag.TimeSortParm })</th>
         <th>Temperature</th>
         <th>Maximum Temperature</th>
         <th>Minimum Temperature</th>
@@ -24,9 +23,6 @@
     @foreach(var item in Model)
     {
         <tr>
-            <td>
-                @Html.DisplayFor(m => item.ID)
-            </td>
             <td>
                 @Html.DisplayFor(m => item.Zipcode)
             </td>
