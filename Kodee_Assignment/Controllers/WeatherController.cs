@@ -10,12 +10,13 @@ using System.Web.Mvc;
 using Newtonsoft.Json;
 using Kodee_Assignment.Models;
 using System.Threading.Tasks;
+using Kodee_Assignment.Models.Context;
 
 namespace Kodee_Assignment.Controllers
 {
     public class WeatherController : Controller
     {
-
+        private WeatherContext db = new WeatherContext();
         private string _usZipRegEx = @"^\d{5}(?:[-\s]\d{4})?$";
         private const string weatherURL = "http://api.openweathermap.org/data/2.5/weather";
         private string appKeyQueryString = "APPID=a82297e58abde9d899a4dffa85b72020";
@@ -48,6 +49,17 @@ namespace Kodee_Assignment.Controllers
                 //use zip code
                 if (isZip)
                 {
+                    //check to see if there exists a record with same zip code captured in last 30 minutes
+                    WeatherResult cacheRes = getFreshCache(vm.Address, DateTime.Now);
+                    //use 
+                    if (cacheRes != null)
+                    {
+                        vm.temp = cacheRes.Temp;
+                        vm.temp_max = cacheRes.Max_temp;
+                        vm.temp_min = cacheRes.Min_temp;
+                        vm.cacheHit = true;
+                        return View("ForecastDetails", vm);
+                    }
                     queryString = "?zip=" + vm.Address + ",us&units=imperial&" + appKeyQueryString;
                 }
                 else
@@ -67,21 +79,44 @@ namespace Kodee_Assignment.Controllers
                     //parse results and set to view model details
                     string jsonRes = await response.Content.ReadAsStringAsync();
                     Forecast forecast = JsonConvert.DeserializeObject<Forecast>(jsonRes);
-
-                    Console.WriteLine(forecast.main.temp);
-                    //set view model to display result content
-                    vm.containsDetails = true;
-
+                    
                     vm.temp = forecast.main.temp;
                     vm.temp_max = forecast.main.temp_max;
                     vm.temp_min = forecast.main.temp_min;
 
+                    //if request was by zip, cache results for later storage
+                    if (isZip)
+                    {
+                        WeatherResult weather_res = new WeatherResult
+                        {
+                            Zipcode = vm.Address,
+                            Time = DateTime.Now,
+                            Temp = vm.temp,
+                            Max_temp = vm.temp_max,
+                            Min_temp = vm.temp_min
+                        };
+                        storeWeatherResults(weather_res);
+                    }
                     return View("ForecastDetails", vm);
                 }
 
                 client.Dispose();
             }
             return View(vm);
+        }
+
+        private WeatherResult getFreshCache(string zip, DateTime now)
+        {
+            DateTime windowStart = now.Add(new TimeSpan(0, -30, 0));
+            WeatherResult res = db.WeatherResult.Where(m => m.Zipcode == zip && m.Time >= windowStart && m.Time <= now).FirstOrDefault();
+            return res;
+        }
+
+        private void storeWeatherResults(WeatherResult weatherRecord)
+        {
+            db.WeatherResult.Add(weatherRecord);
+            db.SaveChanges();
+
         }
 
         private bool isZipCode(string zipcode)

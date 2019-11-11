@@ -10,10 +10,10 @@ namespace Kodee_Assignment.Models.ViewModels
     {
         [Required(ErrorMessage= "Please enter a valid address.")]
         public string Address { get; set; }
-        public bool containsDetails { get; set; } = false;
-        public float temp { get; set; }
-        public float temp_min { get; set; }
-        public float temp_max { get; set; }
+        public bool cacheHit { get; set; } = false;
+        public decimal temp { get; set; }
+        public decimal temp_min { get; set; }
+        public decimal temp_max { get; set; }
 /*        public string City { get; set; }
         public string State { get; set; }
         public string County { get; set; }

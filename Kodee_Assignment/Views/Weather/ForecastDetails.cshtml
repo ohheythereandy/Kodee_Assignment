@@ -6,6 +6,13 @@
 
 @Html.Partial("_ForecastSearch")
 
+@if (Model.cacheHit)
+{
+    <br />
+    <div class="alert alert-success" role="alert">
+        These weather details were pulled from our cache!
+    </div>
+}
 <h2>Forecast Details</h2>
 <label>Current temperature: </label>
 @Html.DisplayTextFor(m => m.temp)
