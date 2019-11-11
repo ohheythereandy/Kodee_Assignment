@@ -24,7 +24,9 @@ namespace Kodee_Assignment.Controllers
         // GET: Weather
         public ActionResult Index()
         {
-            return View();
+            var forecasts = from w in db.WeatherResult
+                            select w;
+            return View(forecasts.ToList());
         }
 
         //GET: Weather/Forecast
@@ -39,19 +41,16 @@ namespace Kodee_Assignment.Controllers
             if (ModelState.IsValid)
             {
                 //try to parse vm address as an integer for zip code, or text for city and state
-                bool isZip = false;
-                if (isZipCode(vm.Address))
-                    isZip = true;
+                bool isZip = isZipCode(vm.Address) ? true : false;
 
                 //post to openweather for temperature, min/max
                 string queryString = "";
 
-                //use zip code
                 if (isZip)
                 {
                     //check to see if there exists a record with same zip code captured in last 30 minutes
                     WeatherResult cacheRes = getFreshCache(vm.Address, DateTime.Now);
-                    //use 
+                    
                     if (cacheRes != null)
                     {
                         vm.temp = cacheRes.Temp;
@@ -69,10 +68,7 @@ namespace Kodee_Assignment.Controllers
 
                 HttpClient client = new HttpClient();
                 client.BaseAddress = new Uri(weatherURL);
-
-                //add accept header for json format
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
                 HttpResponseMessage response = client.GetAsync(queryString).Result;
                 if(response.IsSuccessStatusCode)
                 {
@@ -86,17 +82,8 @@ namespace Kodee_Assignment.Controllers
 
                     //if request was by zip, cache results for later storage
                     if (isZip)
-                    {
-                        WeatherResult weather_res = new WeatherResult
-                        {
-                            Zipcode = vm.Address,
-                            Time = DateTime.Now,
-                            Temp = vm.temp,
-                            Max_temp = vm.temp_max,
-                            Min_temp = vm.temp_min
-                        };
-                        storeWeatherResults(weather_res);
-                    }
+                        storeWeatherResults(vm.Address, DateTime.Now, vm.temp, vm.temp_max, vm.temp_min);
+                    
                     return View("ForecastDetails", vm);
                 }
 
@@ -112,9 +99,17 @@ namespace Kodee_Assignment.Controllers
             return res;
         }
 
-        private void storeWeatherResults(WeatherResult weatherRecord)
+        private void storeWeatherResults(string address, DateTime now, decimal temp, decimal max_temp, decimal min_temp)
         {
-            db.WeatherResult.Add(weatherRecord);
+            WeatherResult weather_res = new WeatherResult
+            {
+                Zipcode = address,
+                Time = now,
+                Temp = temp,
+                Max_temp = max_temp,
+                Min_temp = min_temp
+            };
+            db.WeatherResult.Add(weather_res);
             db.SaveChanges();
 
         }

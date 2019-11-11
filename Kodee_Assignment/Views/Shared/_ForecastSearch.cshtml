@@ -7,7 +7,7 @@
 
     <label>Address</label>
     @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
-    @Html.ValidationMessageFor(m => m.Address, null)
+    @Html.ValidationMessageFor(m => m.Address, null, new { style = "color:red;" })
 
     <br />
     <input class="btn btn-primary" type="submit" />

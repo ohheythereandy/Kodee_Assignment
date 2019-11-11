@@ -10,7 +10,7 @@ namespace Kodee_Assignment.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Forecast", "Weather");
         }
 
         public ActionResult About()

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Kodee_Assignment.Models.WeatherResult>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Forecast History</h2>
+
+<p>
+    @Html.ActionLink("Search for weather", "Forecast", "Weather")
+</p>
+
+<table class="table">
+    <tr>
+        <th> @Html.DisplayNameFor(m => m.ID)</th>
+        <th>@Html.DisplayNameFor(m => m.Zipcode)</th>
+        <th>@Html.DisplayNameFor(m => m.Time)</th>
+        <th>Temperature</th>
+        <th>Maximum Temperature</th>
+        <th>Minimum Temperature</th>
+    </tr>
+
+    @foreach(var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(m => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.Zipcode)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.Time)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.Temp)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.Max_temp)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.Min_temp)
+            </td>
+        </tr>
+    }
+</table>
