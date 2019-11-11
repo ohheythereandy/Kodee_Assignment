@@ -1,0 +1,16 @@
+﻿@model Kodee_Assignment.Models.ViewModels.ForecastViewModel
+@{
+    ViewBag.Title = "ForecastDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Forecast Details</h2>
+<label>Current temperature: </label>
+@Html.DisplayTextFor(m => m.temp)
+
+<label>Min temperature: </label>
+@Html.DisplayTextFor(m => m.temp_min)
+
+<label>Max temperature: </label>
+@Html.DisplayTextFor(m => m.temp_max)
+
